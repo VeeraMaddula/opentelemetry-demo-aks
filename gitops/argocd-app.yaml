@@ -1,7 +1,6 @@
-$app = @"
 apiVersion: argoproj.io/v1alpha1
 kind: Application
-Metadata:
+metadata:
   name: otel-demo
   namespace: argocd
 spec:
@@ -9,23 +8,23 @@ spec:
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
       chart: opentelemetary-demo
-      targetRevison: $CHART_VERSION
+      targetRevision: $CHART_VERSION
       helm:
         releaseName: otel-demo
-        valuesFiles:
-          - values/gitops/values-aks.yaml
-    - repoURL: https://github/veeraMaddula/opentelemetry-demo-aks.git
+        valueFiles:
+          - $values/gitops/values-aks.yaml
+    - repoURL: https://github.com/veeraMaddula/opentelemetry-demo-aks.git
       targetRevision: main
       ref: values
   destination:
     server: https://kubernetes.default.svc
     namespace: otel-demo
   syncPolicy:
-    automated;
-     prune: true
+    automated:
+     prune: false
      selfHeal: true
-    sysncOptions:
-     - ServerSideapply=true
-"@
+    syncOptions,
+     - ServerSideApply=true
+
     
     
