@@ -1,0 +1,17 @@
+apiVersion: secrets-store.csi.x-k8s.io/v1
+kind: SecretProviderClass
+metadata:
+  name: kv-appinsights
+  namespace: otel-demo
+spec:
+  provider: azure
+  parameters:
+    usePodIdentity: "false"
+    clientID: "56c42c19-d06a-43cc-b799-36f9016a7c25"
+    keyvaultName: "kv-otel-veera01"
+    tenantId: "a1487612-8ca5-45f5-bf68-f11dca5dfc49"
+    objects: |
+      array:
+        - |
+          objectName: appinsights-connection-string
+          objectType: secret

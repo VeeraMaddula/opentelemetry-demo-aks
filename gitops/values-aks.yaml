@@ -1,0 +1,33 @@
+default:
+  image:
+    repository: acrotelveera01.azurecr.io/open-telemetry/demo
+
+opentelemetry-collector:
+  serviceAccount:
+    annotations:
+      azure.workload.identity/client-id: "56c42c19-d06a-43cc-b799-36f9016a7c25"
+  podLabels:
+    azure.workload.identity/use: "true"
+  extraVolumes:
+    - name: kv-secrets
+      csi:
+        driver: secrets-store.csi.k8s.io
+        readOnly: true
+        volumeAttributes:
+          secretProviderClass: kv-appinsights
+  extraVolumeMounts:
+    - name: kv-secrets
+      mountPath: /mnt/secrets-store
+      readOnly: true
+  config:
+    exporters:
+      azuremonitor:
+        connection_string: "${file:/mnt/secrets-store/appinsights-connection-string}"
+    service:
+      pipelines:
+        traces:
+          exporters: [otlp_grpc/jaeger, debug, span_metrics, azuremonitor]
+        metrics:
+          exporters: [otlp_http/prometheus, debug]
+        logs:
+          exporters: [opensearch, debug, azuremonitor]
