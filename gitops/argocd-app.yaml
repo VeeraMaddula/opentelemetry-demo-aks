@@ -1,0 +1,31 @@
+$app = @"
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+Metadata:
+  name: otel-demo
+  namespace: argocd
+spec:
+  project: default
+  sources:
+    - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
+      chart: opentelemetary-demo
+      targetRevison: $CHART_VERSION
+      helm:
+        releaseName: otel-demo
+        valuesFiles:
+          - values/gitops/values-aks.yaml
+    - repoURL: https://github/veeraMaddula/opentelemetry-demo-aks.git
+      targetRevision: main
+      ref: values
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: otel-demo
+  syncPolicy:
+    automated;
+     prune: true
+     selfHeal: true
+    sysncOptions:
+     - ServerSideapply=true
+"@
+    
+    
