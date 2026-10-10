@@ -7,13 +7,13 @@ spec:
   project: default
   sources:
     - repoURL: https://open-telemetry.github.io/opentelemetry-helm-charts
-      chart: opentelemetary-demo
-      targetRevision: $CHART_VERSION
+      chart: opentelemetry-demo
+      targetRevision: 0.42.3
       helm:
         releaseName: otel-demo
         valueFiles:
           - $values/gitops/values-aks.yaml
-    - repoURL: https://github.com/veeraMaddula/opentelemetry-demo-aks.git
+    - repoURL: https://github.com/VeeraMaddula/opentelemetry-demo-aks.git
       targetRevision: main
       ref: values
   destination:
@@ -21,7 +21,7 @@ spec:
     namespace: otel-demo
   syncPolicy:
     automated:
-     prune: false
-     selfHeal: true
+      prune: false
+      selfHeal: true
     syncOptions:
-     - ServerSideApply=true
+      - ServerSideApply=true
