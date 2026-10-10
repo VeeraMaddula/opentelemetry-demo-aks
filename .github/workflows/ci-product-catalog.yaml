@@ -1,0 +1,37 @@
+name: ci-product-catalog
+on:
+  push:
+    branches: [main]
+    paths: ['src/product-catalog/**']
+  workflow_dispatch:
+permissions:
+  id-token: write
+  contents: write
+env:
+  ACR: acrotelveera01
+  IMAGE: acrotelveera01.azurecr.io/open-telemetry/demo
+jobs:
+  build-push-bump:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ vars.AZURE_CLIENT_ID }}
+          tenant-id: ${{ vars.AZURE_TENANT_ID }}
+          subscription-id: ${{ vars.AZURE_SUBSCRIPTION_ID }}
+      - name: Log in to ACR
+        run: az acr login --name $ACR
+      - name: Build and push
+        run: |
+          TAG=product-catalog-${GITHUB_SHA::7}
+          docker build -t $IMAGE:$TAG -f src/product-catalog/Dockerfile .
+          docker push $IMAGE:$TAG
+          echo "TAG=$TAG" >> $GITHUB_ENV
+      - name: Bump the tag in gitops
+        run: |
+          yq -i '.components."product-catalog".imageOverride.repository = strenv(IMAGE) | .components."product-catalog".imageOverride.tag = strenv(TAG)' gitops/values-aks.yaml
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git commit -am "gitops: product-catalog -> $TAG"
+          git push
