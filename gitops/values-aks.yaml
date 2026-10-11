@@ -2,6 +2,7 @@ default:
   image:
     repository: acrotelveera01.azurecr.io/open-telemetry/demo
 opentelemetry-collector:
+  priorityClassName: otel-node-agent
   serviceAccount:
     annotations:
       azure.workload.identity/client-id: "56c42c19-d06a-43cc-b799-36f9016a7c25"
