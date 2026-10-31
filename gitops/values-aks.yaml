@@ -1,3 +1,11 @@
+prometheus:
+  server:
+    retention: 2d
+    startupProbe:
+      enabled: true
+      periodSeconds: 10
+      failureThreshold: 30
+      timeoutSeconds: 10
 default:
   image:
     repository: acrotelveera01.azurecr.io/open-telemetry/demo
