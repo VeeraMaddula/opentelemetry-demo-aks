@@ -6,6 +6,9 @@ prometheus:
       periodSeconds: 10
       failureThreshold: 30
       timeoutSeconds: 10
+    livenessProbeTimeout: 15
+    livenessProbeFailureThreshold: 6
+    readinessProbeTimeout: 10
 default:
   image:
     repository: acrotelveera01.azurecr.io/open-telemetry/demo
